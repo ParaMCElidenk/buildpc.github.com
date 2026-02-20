@@ -3,77 +3,69 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>PCFixLab - PC Toplama</title>
+<title>PCFixLab - Ultimate PC Builder</title>
+
 <style>
 body {
-    background: #0f0f0f;
-    color: #fff;
-    font-family: Arial, sans-serif;
-    text-align: center;
+    background:#0f0f0f;
+    color:white;
+    font-family:Arial;
+    text-align:center;
 }
-
-h1 {
-    color: #00eaff;
-}
-
 .container {
-    background: #1a1a1a;
-    padding: 20px;
-    border-radius: 12px;
-    width: 350px;
-    margin: auto;
-    box-shadow: 0 0 20px #00eaff33;
+    width:550px;
+    margin:auto;
+    background:#1a1a1a;
+    padding:20px;
+    border-radius:12px;
 }
-
 select {
-    width: 100%;
-    padding: 8px;
-    margin: 10px 0;
-    background: #222;
-    color: white;
-    border: 1px solid #00eaff;
-    border-radius: 6px;
-}
-
-.result {
-    margin-top: 20px;
-    font-size: 18px;
+    width:100%;
+    padding:8px;
+    margin:8px 0;
+    background:#222;
+    color:white;
 }
 button {
-    padding: 10px 20px;
-    background: #00eaff;
-    border: none;
-    border-radius: 8px;
-    cursor: pointer;
+    padding:10px 20px;
+    background:#00eaff;
+    border:none;
+    border-radius:8px;
+    cursor:pointer;
 }
+.result {
+    margin-top:20px;
+    font-size:18px;
+}
+h1 { color:#00eaff; }
+.warning { color:red; }
+.success { color:lightgreen; }
 </style>
+
 </head>
 <body>
 
-<h1>PCFixLab - PC Toplama Aracı</h1>
+<h1>PCFixLab - Ultimate PC Builder</h1>
 
 <div class="container">
 
 <label>İşlemci:</label>
-<select id="cpu">
-    <option value="0,0">Seçiniz</option>
-    <option value="5000,65">Ryzen 5 5600</option>
-    <option value="7000,125">Intel i5 13600K</option>
-</select>
+<select id="cpu"></select>
 
 <label>Ekran Kartı:</label>
-<select id="gpu">
-    <option value="0,0">Seçiniz</option>
-    <option value="9000,170">RTX 3060</option>
-    <option value="12000,200">RTX 4060</option>
-</select>
+<select id="gpu"></select>
 
 <label>RAM:</label>
-<select id="ram">
-    <option value="0">Seçiniz</option>
-    <option value="1500">16GB DDR4</option>
-    <option value="3000">32GB DDR4</option>
-</select>
+<select id="ram"></select>
+
+<label>SSD:</label>
+<select id="ssd"></select>
+
+<label>PSU:</label>
+<select id="psu"></select>
+
+<label>Kasa:</label>
+<select id="case"></select>
 
 <button onclick="calculate()">Hesapla</button>
 
@@ -82,21 +74,96 @@ button {
 </div>
 
 <script>
+
+// ================= DATA =================
+
+const cpus = [
+{ name:"Ryzen 5 5600", price:5000, watt:65 },
+{ name:"Ryzen 7 7800X3D", price:12000, watt:120 },
+{ name:"Intel i5 12400F", price:5500, watt:65 },
+{ name:"Intel i7 14700K", price:15000, watt:125 }
+];
+
+const gpus = [
+{ name:"RTX 3060", price:9000, watt:170 },
+{ name:"RTX 4060", price:12000, watt:200 },
+{ name:"RTX 4070 Super", price:20000, watt:220 },
+{ name:"RX 7600", price:11000, watt:165 }
+];
+
+const rams = [
+{ name:"16GB DDR4", price:1500 },
+{ name:"32GB DDR4", price:3000 },
+{ name:"16GB DDR5", price:2500 },
+{ name:"32GB DDR5", price:4500 }
+];
+
+const ssds = [
+{ name:"500GB NVMe", price:1200 },
+{ name:"1TB NVMe", price:2000 },
+{ name:"2TB NVMe", price:3500 }
+];
+
+const psus = [
+{ name:"500W", price:1200, watt:500 },
+{ name:"650W", price:1700, watt:650 },
+{ name:"750W", price:2200, watt:750 },
+{ name:"850W", price:3000, watt:850 }
+];
+
+const cases = [
+{ name:"Mid Tower", price:1500 },
+{ name:"RGB Gaming Case", price:2500 },
+{ name:"High Airflow Case", price:3000 }
+];
+
+// ================= LOAD =================
+
+function loadOptions() {
+    load("cpu", cpus);
+    load("gpu", gpus);
+    load("ram", rams);
+    load("ssd", ssds);
+    load("psu", psus);
+    load("case", cases);
+}
+
+function load(id, data) {
+    const select = document.getElementById(id);
+    data.forEach((item, index) => {
+        select.innerHTML += `<option value="${index}">${item.name}</option>`;
+    });
+}
+
+loadOptions();
+
+// ================= CALCULATE =================
+
 function calculate() {
-    let cpu = document.getElementById("cpu").value.split(",");
-    let gpu = document.getElementById("gpu").value.split(",");
-    let ram = parseInt(document.getElementById("ram").value);
 
-    let totalPrice = parseInt(cpu[0]) + parseInt(gpu[0]) + ram;
-    let totalWatt = parseInt(cpu[1]) + parseInt(gpu[1]) + 100;
+    const cpu = cpus[document.getElementById("cpu").value];
+    const gpu = gpus[document.getElementById("gpu").value];
+    const ram = rams[document.getElementById("ram").value];
+    const ssd = ssds[document.getElementById("ssd").value];
+    const psu = psus[document.getElementById("psu").value];
+    const kasa = cases[document.getElementById("case").value];
 
-    let recommendedPSU = totalWatt + 150;
+    const totalPrice = cpu.price + gpu.price + ram.price + ssd.price + psu.price + kasa.price;
+    const totalWatt = cpu.watt + gpu.watt + 100;
+
+    let psuStatus = "";
+    if(psu.watt < totalWatt + 100){
+        psuStatus = "<div class='warning'>⚠ PSU Yetersiz!</div>";
+    } else {
+        psuStatus = "<div class='success'>✔ PSU Yeterli</div>";
+    }
 
     document.getElementById("result").innerHTML =
         "Toplam Fiyat: " + totalPrice + " TL<br>" +
         "Tahmini Güç Tüketimi: " + totalWatt + " W<br>" +
-        "Önerilen PSU: " + recommendedPSU + " W";
+        psuStatus;
 }
+
 </script>
 
 </body>
