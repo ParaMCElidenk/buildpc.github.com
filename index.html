@@ -1,51 +1,26 @@
+
 <!DOCTYPE html>
 <html lang="tr">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>PCFixLab - Ultimate PC Builder</title>
+<title>PCFixLab - Mega Builder</title>
 
 <style>
-body {
-    background:#0f0f0f;
-    color:white;
-    font-family:Arial;
-    text-align:center;
-}
-.container {
-    width:550px;
-    margin:auto;
-    background:#1a1a1a;
-    padding:20px;
-    border-radius:12px;
-}
-select {
-    width:100%;
-    padding:8px;
-    margin:8px 0;
-    background:#222;
-    color:white;
-}
-button {
-    padding:10px 20px;
-    background:#00eaff;
-    border:none;
-    border-radius:8px;
-    cursor:pointer;
-}
-.result {
-    margin-top:20px;
-    font-size:18px;
-}
-h1 { color:#00eaff; }
+body { background:#0f0f0f; color:white; font-family:Arial; text-align:center; }
+.container { width:650px; margin:auto; background:#1a1a1a; padding:20px; border-radius:12px; }
+select, input { width:100%; padding:8px; margin:6px 0; background:#222; color:white; border:1px solid #333; }
+button { padding:10px 20px; background:#00eaff; border:none; border-radius:8px; cursor:pointer; }
+.result { margin-top:20px; font-size:18px; }
 .warning { color:red; }
 .success { color:lightgreen; }
+h1 { color:#00eaff; }
 </style>
 
 </head>
 <body>
 
-<h1>PCFixLab - Ultimate PC Builder</h1>
+<h1>PCFixLab - Mega PC Builder</h1>
 
 <div class="container">
 
@@ -75,58 +50,83 @@ h1 { color:#00eaff; }
 
 <script>
 
-// ================= DATA =================
+// ================= CPU =================
 
 const cpus = [
+{ name:"Ryzen 5 1600", price:2000, watt:65 },
+{ name:"Ryzen 5 2600", price:2500, watt:65 },
+{ name:"Ryzen 5 3600", price:3500, watt:65 },
 { name:"Ryzen 5 5600", price:5000, watt:65 },
+{ name:"Ryzen 7 5800X", price:7000, watt:105 },
 { name:"Ryzen 7 7800X3D", price:12000, watt:120 },
+{ name:"Ryzen 9 7950X", price:18000, watt:170 },
+{ name:"Intel i5 8400", price:2500, watt:65 },
+{ name:"Intel i5 10400F", price:4000, watt:65 },
 { name:"Intel i5 12400F", price:5500, watt:65 },
-{ name:"Intel i7 14700K", price:15000, watt:125 }
+{ name:"Intel i5 13600K", price:9000, watt:125 },
+{ name:"Intel i7 12700K", price:11000, watt:125 },
+{ name:"Intel i7 14700K", price:15000, watt:125 },
+{ name:"Intel i9 14900K", price:20000, watt:150 }
 ];
 
+// ================= GPU =================
+
 const gpus = [
+{ name:"GTX 1060", price:4000, watt:120 },
+{ name:"GTX 1660 Super", price:6000, watt:125 },
+{ name:"RTX 2060", price:7000, watt:160 },
 { name:"RTX 3060", price:9000, watt:170 },
 { name:"RTX 4060", price:12000, watt:200 },
 { name:"RTX 4070 Super", price:20000, watt:220 },
-{ name:"RX 7600", price:11000, watt:165 }
+{ name:"RTX 4080 Super", price:35000, watt:320 },
+{ name:"RTX 4090", price:50000, watt:450 },
+{ name:"RX 580", price:3000, watt:185 },
+{ name:"RX 6600", price:8000, watt:132 },
+{ name:"RX 7600", price:11000, watt:165 },
+{ name:"RX 7800 XT", price:18000, watt:263 }
 ];
 
+// ================= RAM =================
+
 const rams = [
+{ name:"8GB DDR4", price:700 },
 { name:"16GB DDR4", price:1500 },
 { name:"32GB DDR4", price:3000 },
 { name:"16GB DDR5", price:2500 },
-{ name:"32GB DDR5", price:4500 }
+{ name:"32GB DDR5", price:4500 },
+{ name:"64GB DDR5", price:8000 }
 ];
 
+// ================= SSD =================
+
 const ssds = [
+{ name:"500GB SATA", price:800 },
+{ name:"1TB SATA", price:1200 },
 { name:"500GB NVMe", price:1200 },
 { name:"1TB NVMe", price:2000 },
 { name:"2TB NVMe", price:3500 }
 ];
 
+// ================= PSU =================
+
 const psus = [
-{ name:"500W", price:1200, watt:500 },
-{ name:"650W", price:1700, watt:650 },
-{ name:"750W", price:2200, watt:750 },
-{ name:"850W", price:3000, watt:850 }
+{ name:"500W Bronze", price:1200, watt:500 },
+{ name:"650W Bronze", price:1700, watt:650 },
+{ name:"750W Gold", price:2500, watt:750 },
+{ name:"850W Gold", price:3500, watt:850 },
+{ name:"1000W Platinum", price:5000, watt:1000 }
 ];
 
+// ================= CASE =================
+
 const cases = [
-{ name:"Mid Tower", price:1500 },
+{ name:"Basic Mid Tower", price:1500 },
 { name:"RGB Gaming Case", price:2500 },
-{ name:"High Airflow Case", price:3000 }
+{ name:"High Airflow Case", price:3000 },
+{ name:"Premium Glass Case", price:5000 }
 ];
 
 // ================= LOAD =================
-
-function loadOptions() {
-    load("cpu", cpus);
-    load("gpu", gpus);
-    load("ram", rams);
-    load("ssd", ssds);
-    load("psu", psus);
-    load("case", cases);
-}
 
 function load(id, data) {
     const select = document.getElementById(id);
@@ -135,7 +135,12 @@ function load(id, data) {
     });
 }
 
-loadOptions();
+load("cpu", cpus);
+load("gpu", gpus);
+load("ram", rams);
+load("ssd", ssds);
+load("psu", psus);
+load("case", cases);
 
 // ================= CALCULATE =================
 
@@ -160,7 +165,7 @@ function calculate() {
 
     document.getElementById("result").innerHTML =
         "Toplam Fiyat: " + totalPrice + " TL<br>" +
-        "Tahmini Güç Tüketimi: " + totalWatt + " W<br>" +
+        "Tahmini Güç: " + totalWatt + " W<br>" +
         psuStatus;
 }
 
