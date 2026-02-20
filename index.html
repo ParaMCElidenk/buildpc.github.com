@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PCFixLab - PC Toplama</title>
+<style>
+body {
+    background: #0f0f0f;
+    color: #fff;
+    font-family: Arial, sans-serif;
+    text-align: center;
+}
+
+h1 {
+    color: #00eaff;
+}
+
+.container {
+    background: #1a1a1a;
+    padding: 20px;
+    border-radius: 12px;
+    width: 350px;
+    margin: auto;
+    box-shadow: 0 0 20px #00eaff33;
+}
+
+select {
+    width: 100%;
+    padding: 8px;
+    margin: 10px 0;
+    background: #222;
+    color: white;
+    border: 1px solid #00eaff;
+    border-radius: 6px;
+}
+
+.result {
+    margin-top: 20px;
+    font-size: 18px;
+}
+button {
+    padding: 10px 20px;
+    background: #00eaff;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+}
+</style>
+</head>
+<body>
+
+<h1>PCFixLab - PC Toplama Aracı</h1>
+
+<div class="container">
+
+<label>İşlemci:</label>
+<select id="cpu">
+    <option value="0,0">Seçiniz</option>
+    <option value="5000,65">Ryzen 5 5600</option>
+    <option value="7000,125">Intel i5 13600K</option>
+</select>
+
+<label>Ekran Kartı:</label>
+<select id="gpu">
+    <option value="0,0">Seçiniz</option>
+    <option value="9000,170">RTX 3060</option>
+    <option value="12000,200">RTX 4060</option>
+</select>
+
+<label>RAM:</label>
+<select id="ram">
+    <option value="0">Seçiniz</option>
+    <option value="1500">16GB DDR4</option>
+    <option value="3000">32GB DDR4</option>
+</select>
+
+<button onclick="calculate()">Hesapla</button>
+
+<div class="result" id="result"></div>
+
+</div>
+
+<script>
+function calculate() {
+    let cpu = document.getElementById("cpu").value.split(",");
+    let gpu = document.getElementById("gpu").value.split(",");
+    let ram = parseInt(document.getElementById("ram").value);
+
+    let totalPrice = parseInt(cpu[0]) + parseInt(gpu[0]) + ram;
+    let totalWatt = parseInt(cpu[1]) + parseInt(gpu[1]) + 100;
+
+    let recommendedPSU = totalWatt + 150;
+
+    document.getElementById("result").innerHTML =
+        "Toplam Fiyat: " + totalPrice + " TL<br>" +
+        "Tahmini Güç Tüketimi: " + totalWatt + " W<br>" +
+        "Önerilen PSU: " + recommendedPSU + " W";
+}
+</script>
+
+</body>
+</html>
