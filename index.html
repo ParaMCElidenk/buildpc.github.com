@@ -1,20 +1,76 @@
-
 <!DOCTYPE html>
 <html lang="tr">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>PCFixLab - Mega Builder</title>
+<title>PCFixLab - Mega PC Builder</title>
+
+<!-- SVG FAVICON -->
+<link rel="icon" type="image/svg+xml" href='data:image/svg+xml,
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
+<rect width="100" height="100" rx="20" fill="%2300eaff"/>
+<text x="50%" y="58%" font-size="50" text-anchor="middle" fill="black" font-family="Arial" font-weight="bold">PC</text>
+</svg>'>
 
 <style>
-body { background:#0f0f0f; color:white; font-family:Arial; text-align:center; }
-.container { width:650px; margin:auto; background:#1a1a1a; padding:20px; border-radius:12px; }
-select, input { width:100%; padding:8px; margin:6px 0; background:#222; color:white; border:1px solid #333; }
-button { padding:10px 20px; background:#00eaff; border:none; border-radius:8px; cursor:pointer; }
-.result { margin-top:20px; font-size:18px; }
-.warning { color:red; }
-.success { color:lightgreen; }
-h1 { color:#00eaff; }
+body {
+    background:#0f0f0f;
+    color:white;
+    font-family:Arial;
+    text-align:center;
+}
+
+h1 {
+    color:#00eaff;
+    margin-top:20px;
+}
+
+.container {
+    width:700px;
+    margin:auto;
+    background:#1a1a1a;
+    padding:25px;
+    border-radius:15px;
+    box-shadow:0 0 25px #00eaff22;
+}
+
+select {
+    width:100%;
+    padding:10px;
+    margin:6px 0;
+    background:#222;
+    color:white;
+    border:1px solid #333;
+    border-radius:6px;
+}
+
+button {
+    padding:12px 25px;
+    background:#00eaff;
+    border:none;
+    border-radius:10px;
+    cursor:pointer;
+    font-weight:bold;
+    margin-top:10px;
+}
+
+button:hover {
+    background:#00c7cc;
+}
+
+.result {
+    margin-top:20px;
+    font-size:18px;
+}
+
+.warning { color:red; font-weight:bold; }
+.success { color:lightgreen; font-weight:bold; }
+
+footer {
+    margin-top:40px;
+    opacity:0.5;
+    font-size:14px;
+}
 </style>
 
 </head>
@@ -48,31 +104,27 @@ h1 { color:#00eaff; }
 
 </div>
 
+<footer>© 2026 PCFixLab</footer>
+
 <script>
 
 // ================= CPU =================
-
 const cpus = [
 { name:"Ryzen 5 1600", price:2000, watt:65 },
-{ name:"Ryzen 5 2600", price:2500, watt:65 },
 { name:"Ryzen 5 3600", price:3500, watt:65 },
 { name:"Ryzen 5 5600", price:5000, watt:65 },
 { name:"Ryzen 7 5800X", price:7000, watt:105 },
 { name:"Ryzen 7 7800X3D", price:12000, watt:120 },
 { name:"Ryzen 9 7950X", price:18000, watt:170 },
-{ name:"Intel i5 8400", price:2500, watt:65 },
 { name:"Intel i5 10400F", price:4000, watt:65 },
 { name:"Intel i5 12400F", price:5500, watt:65 },
 { name:"Intel i5 13600K", price:9000, watt:125 },
-{ name:"Intel i7 12700K", price:11000, watt:125 },
 { name:"Intel i7 14700K", price:15000, watt:125 },
 { name:"Intel i9 14900K", price:20000, watt:150 }
 ];
 
 // ================= GPU =================
-
 const gpus = [
-{ name:"GTX 1060", price:4000, watt:120 },
 { name:"GTX 1660 Super", price:6000, watt:125 },
 { name:"RTX 2060", price:7000, watt:160 },
 { name:"RTX 3060", price:9000, watt:170 },
@@ -80,16 +132,13 @@ const gpus = [
 { name:"RTX 4070 Super", price:20000, watt:220 },
 { name:"RTX 4080 Super", price:35000, watt:320 },
 { name:"RTX 4090", price:50000, watt:450 },
-{ name:"RX 580", price:3000, watt:185 },
 { name:"RX 6600", price:8000, watt:132 },
 { name:"RX 7600", price:11000, watt:165 },
 { name:"RX 7800 XT", price:18000, watt:263 }
 ];
 
 // ================= RAM =================
-
 const rams = [
-{ name:"8GB DDR4", price:700 },
 { name:"16GB DDR4", price:1500 },
 { name:"32GB DDR4", price:3000 },
 { name:"16GB DDR5", price:2500 },
@@ -98,7 +147,6 @@ const rams = [
 ];
 
 // ================= SSD =================
-
 const ssds = [
 { name:"500GB SATA", price:800 },
 { name:"1TB SATA", price:1200 },
@@ -108,7 +156,6 @@ const ssds = [
 ];
 
 // ================= PSU =================
-
 const psus = [
 { name:"500W Bronze", price:1200, watt:500 },
 { name:"650W Bronze", price:1700, watt:650 },
@@ -118,7 +165,6 @@ const psus = [
 ];
 
 // ================= CASE =================
-
 const cases = [
 { name:"Basic Mid Tower", price:1500 },
 { name:"RGB Gaming Case", price:2500 },
@@ -127,7 +173,6 @@ const cases = [
 ];
 
 // ================= LOAD =================
-
 function load(id, data) {
     const select = document.getElementById(id);
     data.forEach((item, index) => {
@@ -143,7 +188,6 @@ load("psu", psus);
 load("case", cases);
 
 // ================= CALCULATE =================
-
 function calculate() {
 
     const cpu = cpus[document.getElementById("cpu").value];
@@ -173,3 +217,43 @@ function calculate() {
 
 </body>
 </html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
