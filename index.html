@@ -2,180 +2,120 @@
 <html lang="tr">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>PCFixLab - Mega PC Builder</title>
-
+<title>PCFixLab</title>
 <link rel="icon" type="image/png" sizes="32x32" href="favicon.png">
 
 <style>
-body { background:#0f0f0f; color:white; font-family:Arial; text-align:center; }
-h1 { color:#00eaff; margin-top:20px; }
-.container { width:700px; margin:auto; background:#1a1a1a; padding:25px; border-radius:15px; box-shadow:0 0 25px #00eaff22; }
-select { width:100%; padding:10px; margin:6px 0; background:#222; color:white; border:1px solid #333; border-radius:6px; }
-button { padding:12px 25px; background:#00eaff; border:none; border-radius:10px; cursor:pointer; font-weight:bold; margin:8px 4px; }
-button:hover { background:#00c7cc; }
-.result { margin-top:20px; font-size:18px; }
-.warning { color:red; font-weight:bold; }
-.success { color:lightgreen; font-weight:bold; }
-footer { margin-top:40px; opacity:0.5; font-size:14px; }
+body {
+  font-family: Arial;
+  background:#111;
+  color:white;
+  text-align:center;
+}
+select, button {
+  padding:10px;
+  margin:10px;
+}
+#successMessage {
+  display:none;
+  margin-top:20px;
+  color:#00ff88;
+}
 </style>
 </head>
 <body>
 
-<h1>PCFixLab - Mega PC Builder</h1>
+<h1>PCFixLab - PC Toplama</h1>
 
-<div class="container">
+<form id="orderForm">
 
-<label>İşlemci:</label>
-<select id="cpu"></select>
+<h3>İşlemci</h3>
+<select id="cpu" required>
+<option value="">Seç</option>
+<option>Intel i3</option>
+<option>Intel i5</option>
+<option>Intel i7</option>
+<option>Intel i9</option>
+<option>Ryzen 3</option>
+<option>Ryzen 5</option>
+<option>Ryzen 7</option>
+<option>Ryzen 9</option>
+</select>
 
-<label>Ekran Kartı:</label>
-<select id="gpu"></select>
+<h3>Ekran Kartı</h3>
+<select id="gpu" required>
+<option value="">Seç</option>
+<option>RTX 3060</option>
+<option>RTX 4060</option>
+<option>RTX 4070</option>
+<option>RTX 4080</option>
+<option>RX 6600</option>
+<option>RX 6700 XT</option>
+<option>RX 7800 XT</option>
+</select>
 
-<label>RAM:</label>
-<select id="ram"></select>
+<h3>RAM</h3>
+<select id="ram" required>
+<option value="">Seç</option>
+<option>8GB</option>
+<option>16GB</option>
+<option>32GB</option>
+<option>64GB</option>
+</select>
 
-<label>SSD:</label>
-<select id="ssd"></select>
+<h3>PSU</h3>
+<select id="psu" required>
+<option value="">Seç</option>
+<option>550W</option>
+<option>650W</option>
+<option>750W</option>
+<option>850W</option>
+</select>
 
-<label>PSU:</label>
-<select id="psu"></select>
+<h3>Kasa</h3>
+<select id="case" required>
+<option value="">Seç</option>
+<option>Mid Tower</option>
+<option>Full Tower</option>
+<option>Mini ITX</option>
+</select>
 
-<label>Kasa:</label>
-<select id="case"></select>
+<br>
+<button type="submit">Siparişi Tamamla</button>
+</form>
 
-<button onclick="calculate()">Hesapla</button>
-<button onclick="orderSystem()">Sipariş Oluştur</button>
-
-<div class="result" id="result"></div>
-
+<div id="successMessage">
+<h2>✅ Sipariş Alındı</h2>
+<p id="summary"></p>
+<p id="orderNumber"></p>
+<p>💳 Ödeme Başarıyla Alındı (Demo Sistem)</p>
 </div>
 
-<footer>© 2026 PCFixLab</footer>
-
 <script>
+document.getElementById("orderForm").addEventListener("submit", function(e){
+  e.preventDefault();
 
-// ================= DATA =================
+  const cpu = document.getElementById("cpu").value;
+  const gpu = document.getElementById("gpu").value;
+  const ram = document.getElementById("ram").value;
+  const psu = document.getElementById("psu").value;
+  const kasa = document.getElementById("case").value;
 
-const cpus = [
-{ name:"Ryzen 5 5600", price:5000, watt:65 },
-{ name:"Intel i5 12400F", price:5500, watt:65 },
-{ name:"Intel i7 14700K", price:15000, watt:125 }
-];
+  const orderNo = "PFL-" + Math.floor(Math.random() * 100000);
 
-const gpus = [
-{ name:"RTX 3060", price:9000, watt:170 },
-{ name:"RTX 4060", price:12000, watt:200 },
-{ name:"RTX 4070 Super", price:20000, watt:220 }
-];
+  document.getElementById("summary").innerHTML =
+    "Seçilen Sistem:<br>" +
+    "CPU: " + cpu + "<br>" +
+    "GPU: " + gpu + "<br>" +
+    "RAM: " + ram + "<br>" +
+    "PSU: " + psu + "<br>" +
+    "Kasa: " + kasa;
 
-const rams = [
-{ name:"16GB DDR4", price:1500 },
-{ name:"32GB DDR5", price:4500 }
-];
+  document.getElementById("orderNumber").innerText =
+    "Sipariş Numaranız: " + orderNo;
 
-const ssds = [
-{ name:"1TB NVMe", price:2000 },
-{ name:"2TB NVMe", price:3500 }
-];
-
-const psus = [
-{ name:"650W Bronze", price:1700, watt:650 },
-{ name:"750W Gold", price:2500, watt:750 },
-{ name:"850W Gold", price:3500, watt:850 }
-];
-
-const cases = [
-{ name:"RGB Gaming Case", price:2500 },
-{ name:"High Airflow Case", price:3000 }
-];
-
-// ================= LOAD =================
-
-function load(id, data) {
-    const select = document.getElementById(id);
-    data.forEach((item, index) => {
-        select.innerHTML += `<option value="${index}">${item.name}</option>`;
-    });
-}
-
-load("cpu", cpus);
-load("gpu", gpus);
-load("ram", rams);
-load("ssd", ssds);
-load("psu", psus);
-load("case", cases);
-
-// ================= CALCULATE =================
-
-function calculate() {
-
-    const cpu = cpus[cpuSelect()];
-    const gpu = gpus[gpuSelect()];
-    const ram = rams[ramSelect()];
-    const ssd = ssds[ssdSelect()];
-    const psu = psus[psuSelect()];
-    const kasa = cases[caseSelect()];
-
-    const totalPrice = cpu.price + gpu.price + ram.price + ssd.price + psu.price + kasa.price;
-    const totalWatt = cpu.watt + gpu.watt + 100;
-
-    let psuStatus = "";
-    if(psu.watt < totalWatt + 100){
-        psuStatus = "<div class='warning'>⚠ PSU Yetersiz!</div>";
-    } else {
-        psuStatus = "<div class='success'>✔ PSU Yeterli</div>";
-    }
-
-    document.getElementById("result").innerHTML =
-        "Toplam Fiyat: " + totalPrice + " TL<br>" +
-        "Tahmini Güç: " + totalWatt + " W<br>" +
-        psuStatus;
-}
-
-// ================= ORDER =================
-
-function orderSystem(){
-
-    const cpu = cpus[cpuSelect()];
-    const gpu = gpus[gpuSelect()];
-    const ram = rams[ramSelect()];
-    const ssd = ssds[ssdSelect()];
-    const psu = psus[psuSelect()];
-    const kasa = cases[caseSelect()];
-
-    const totalPrice = cpu.price + gpu.price + ram.price + ssd.price + psu.price + kasa.price;
-
-    const body =
-`Merhaba,
-
-Aşağıdaki sistemi sipariş etmek istiyorum:
-
-İşlemci: ${cpu.name}
-Ekran Kartı: ${gpu.name}
-RAM: ${ram.name}
-SSD: ${ssd.name}
-PSU: ${psu.name}
-Kasa: ${kasa.name}
-
-Toplam Fiyat: ${totalPrice} TL
-
-İyi çalışmalar.`;
-
-    const mailtoLink = `mailto:umutelidenk@gmail.com?subject=PCFixLab Sistem Siparişi&body=${encodeURIComponent(body)}`;
-
-    window.location.href = mailtoLink;
-}
-
-// ================= SELECT HELPERS =================
-
-function cpuSelect(){ return document.getElementById("cpu").value; }
-function gpuSelect(){ return document.getElementById("gpu").value; }
-function ramSelect(){ return document.getElementById("ram").value; }
-function ssdSelect(){ return document.getElementById("ssd").value; }
-function psuSelect(){ return document.getElementById("psu").value; }
-function caseSelect(){ return document.getElementById("case").value; }
-
+  document.getElementById("successMessage").style.display = "block";
+});
 </script>
 
 </body>
